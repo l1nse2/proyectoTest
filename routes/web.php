@@ -17,3 +17,6 @@ use App\Http\Controllers\IndicadorController;
 Route::get('/', [IndicadorController::class, 'index']);
 
 Route::post('deleteAjax',[IndicadorController::class, 'deleteAjax']);
+
+Route::post('verAjax',[IndicadorController::class, 'verAjax']);
+

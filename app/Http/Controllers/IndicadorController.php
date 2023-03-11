@@ -29,6 +29,18 @@ class IndicadorController extends Controller
       	 
     }
 
+      public function verAjax(Request $request)
+    {   
+    	$id = $request->id;
+    	$indicador = Indicador::find($id); 	 
+    	if ($indicador)
+    	{
+    		return response()->json(array('msg'=> true,'indicadores'=> $indicador ), 200);
+    	}
+    	else
+    	{return response()->json(array('msg'=> false), 500);}
+      	 
+    }
       public function destroy(Indicador $indicador)
     {	
         $indicador->delete();
