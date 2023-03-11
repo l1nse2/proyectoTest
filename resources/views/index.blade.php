@@ -189,7 +189,7 @@
                                 Indicadores
                             </div>
                             <div class="container mt-5">
-                                <table  class="table table-bordered mb-5">
+                                <table id=¨tablaIndicadores¨ class="table table-bordered mb-5">
                                     <thead>
                                         <tr>
                                             <th>id</th>
@@ -227,7 +227,7 @@
                                                                 <a class="btn btn-info">Ver</a>
                                                                 <a class="btn btn-primary" >Editar</a>
                                                             </form>
-                                                                <button class="btn btn-danger" onclick="myFunction()">Borrar</button>
+                                                                <button class="btn btn-danger" onclick="deleteIndicator({{$indicador->id}} )">Borrar</button>
                                                             
                                                         </td>
                                                     </tr>
@@ -270,15 +270,22 @@
         <script src="js/datatables-simple-demo.js"></script>
         <script >
       
-            function myFunction() {
+            function deleteIndicator($id) {
               let text = "Estas seguro que deseas borrar el indicador";
               if (confirm(text) == true) {
                 $.ajax({
-                   type:'get',
-                   url:'/miJqueryAjax',
-                   data:'_token = <?php echo csrf_token() ?>',
+                   type:'post',
+                   url:'/deleteAjax',
+                   data: {  "_token": "{{ csrf_token() }}",
+                            id: $id },
                    success:function(data) {
-                      console.log(data);
+                      if(data.msg)                        
+                        {
+                            alert('el indicador fue borrado con exito.');                 
+                            location.reload();
+                        }
+                      else
+                        {alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')}
                    }
                 });
               } else {

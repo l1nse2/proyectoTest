@@ -16,4 +16,4 @@ use App\Http\Controllers\IndicadorController;
 
 Route::get('/', [IndicadorController::class, 'index']);
 
-Route::get('miJqueryAjax',[IndicadorController::class, 'ajax']);
+Route::post('deleteAjax',[IndicadorController::class, 'deleteAjax']);

@@ -14,16 +14,24 @@ class IndicadorController extends Controller
         return view('index', compact('indicadores'));
     }
 
-      public function ajax()
-    {
-         $msg = "This is a simple message.";
-      	 return response()->json(array('msg'=> $msg), 200);
+      public function deleteAjax(Request $request)
+    {   
+    	$id = $request->id;
+    	$indicador = Indicador::find($id); 	 
+    	if ($this->destroy($indicador))
+    	{
+    		$indicadores = Indicador::orderBy('id')->paginate(20);
+    		$indicadores = json_encode($indicadores);
+    		return response()->json(array('msg'=> true,'indicadores'=> $indicadores ), 200);
+    	}
+    	else
+    	{return response()->json(array('msg'=> false), 500);}
+      	 
     }
 
       public function destroy(Indicador $indicador)
-    {
-    	dd('borrado');
-        $company->delete();
-        return redirect()->route('companies.index')->with('success','Company has been deleted successfully');
+    {	
+        $indicador->delete();
+        return true;
     }
 }
