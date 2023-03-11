@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IndicadorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('/indicadores', function () {
+    return view('index');
+});
+
+Route::get('/indicadores2', [IndicadorController::class, 'index']);
