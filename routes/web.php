@@ -14,12 +14,6 @@ use App\Http\Controllers\IndicadorController;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [IndicadorController::class, 'index']);
 
-Route::get('/indicadores', function () {
-    return view('index');
-});
-
-Route::get('/indicadores2', [IndicadorController::class, 'index']);
+Route::get('miJqueryAjax',[IndicadorController::class, 'ajax']);

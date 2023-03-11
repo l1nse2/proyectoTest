@@ -16,6 +16,7 @@
 
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
         
     </head>
 	<body class="sb-nav-fixed">
@@ -225,11 +226,9 @@
                                                             <form action="" method="POST">
                                                                 <a class="btn btn-info">Ver</a>
                                                                 <a class="btn btn-primary" >Editar</a>
-                                                                @csrf @method('DELETE')
-                                                                <button type="submit" onclick=
-                                                                "return confirm('Esta seguro de borrar un indicador!')"
-                                                                    class="btn btn-danger">Borrar</button>
                                                             </form>
+                                                                <button class="btn btn-danger" onclick="myFunction()">Borrar</button>
+                                                            
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -269,5 +268,25 @@
         <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
+        <script >
+      
+            function myFunction() {
+              let text = "Estas seguro que deseas borrar el indicador";
+              if (confirm(text) == true) {
+                $.ajax({
+                   type:'get',
+                   url:'/miJqueryAjax',
+                   data:'_token = <?php echo csrf_token() ?>',
+                   success:function(data) {
+                      console.log(data);
+                   }
+                });
+              } else {
+                text = "You canceled!";
+              }
+              console.log(text);
+            }    
+        </script>
+        
     </body>
 </html
