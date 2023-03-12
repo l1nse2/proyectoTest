@@ -39,7 +39,9 @@ class IndicadorController extends Controller
     		return response()->json(array('msg'=> true,'indicador'=> $indicador ), 200);
     	}
     	else
-    	{return response()->json(array('msg'=> false), 500);}
+    	{
+    		return response()->json(array('msg'=> false), 500);
+    	}
       	 
     }
       public function destroy(Indicador $indicador)
@@ -87,6 +89,54 @@ class IndicadorController extends Controller
         	}
         	
         }
+    }
 
+    public function openEditarAjax(Request $request)
+    {
+    	$id = $request->id;
+    	$indicador = Indicador::find($id); 	 
+    	if ($indicador)
+    	{
+    		return response()->json(array('msg'=> true,'indicador'=> $indicador ), 200);
+    	}
+    	else
+    	{
+    		return response()->json(array('msg'=> false), 500);
+    	}
+    }
+
+    public function editarAjax(Request $request){
+
+    	$validator = Validator::make($request->all(), [
+            'nombre'=>'required',
+            'codigo'=>'required',
+            'unidadMedida'=>'required',            
+            'origen'=>'required',
+            'valor'=>'required|max:10|regex:/^-?[0-9]+(?:\.[0-9]{1,2})?$/',
+            'fecha'=>'required|date'
+        ],[
+    		'required' => 'Cuidado!! el campo :attribute no se puede dejar vacio',
+    		'valor.max' => 'Cuidado!! el campo valor no puede superar los 10 caracteres',
+    		'valor.regex' => 'Cuidado!! el campo valor solo admite numeros' 
+		]);    	
+        if ($validator->fails()) {        	
+        	$errors = json_encode($validator->errors());
+        	return response()->json(array('msg'=> false,'errores'=> $errors ), 400);            
+        }else
+        {    
+    		$indicador = Indicador::find($request->id); 	
+            $indicador->nombreIndicador = $request->get('nombre');
+            $indicador->codigoIndicador = $request->get('codigo');
+            $indicador->unidadMedidaIndicador = $request->get('unidadMedida');
+            $indicador->valorIndicador = $request->get('valor');
+            $indicador->fechaIndicador = $request->get('fecha');
+            $indicador->origenIndicador = $request->get('origen');        	
+        	if($indicador->save()){
+        		return response()->json(array('msg'=> true), 200);         		
+        	}else
+        	{
+        		return response()->json(array('msg'=> false), 400); 
+        	}        	
+        }
     }
 }

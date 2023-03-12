@@ -126,53 +126,10 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Dashboard</li>
-                        </ol>
+                        <h1 class="mt-4">Indicadores</h1>                        
+                    
                         <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      
-
-
-                        <div class="row">
-                            <div class="col-xl-6">
+                            <div class="col-xl-12">
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-area me-1"></i>
@@ -181,7 +138,8 @@
                                     <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
                                 </div>
                             </div>
-                            <div class="col-xl-6">
+
+                            <div class="col-xl-12">
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-bar me-1"></i>
@@ -204,28 +162,16 @@
                                 <table id=¨tablaIndicadores¨ class="table table-bordered mb-5">
                                     <thead>
                                         <tr>
-                                            <th>id</th>
-                                            <th>nombreIndicador</th>
-                                            <th>codigoIndicador</th>
-                                            <th>unidadMedidaIndicador</th>
-                                            <th>valorIndicador</th>    
-                                            <th>fechaIndicador</th> 
-                                            <th>origenIndicador</th>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Codigo</th>
+                                            <th>Unidad Medida</th>
+                                            <th>Valor</th>    
+                                            <th>Fecha</th> 
+                                            <th>Origen</th>
                                             <th>Acciones</th>
                                         </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>id</th>
-                                            <th>nombreIndicador</th>
-                                            <th>codigoIndicador</th>
-                                            <th>unidadMedidaIndicador</th>
-                                            <th>fechaIndicador</th>
-                                            <th>valorIndicador</th>
-                                            <th>origenIndicador</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </tfoot>
+                                    </thead>                                    
                                     @isset($indicadores)                                        
                                         <tbody>
                                             @if($indicadores->count() > 0 )
@@ -239,9 +185,9 @@
                                                         <td>{{$indicador->fechaIndicador}}</td>
                                                         <td>{{$indicador->origenIndicador}}</td>
                                                         <td>                                      
-                                                             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalVerIndicador"  onclick="verIndicador({{$indicador->id}})")>Ver </button>
-                                                            <button type="button" class="btn btn-danger" onclick="deleteIndicator({{$indicador->id}} )">Borrar</button>
-                                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarIndicador" onclick="editarIndicador()">Editar </button>
+                                                             <button type="button " class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalVerIndicador"  onclick="verIndicador({{$indicador->id}})")>Ver </button>
+                                                            <button type="button" class="btn btn-danger btn-sm mt-1" onclick="deleteIndicator({{$indicador->id}} )">Borrar</button>
+                                                            <button type="button" class="btn btn-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#modalEditarIndicador" onclick="openEditarIndicador({{$indicador->id}})">Editar </button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -310,7 +256,6 @@
             }    
 
             function verIndicador($id) {
-                $('#modalVerIndicador').modal('show');
                 $.ajax({
                    type:'post',
                    url:'/verAjax',
@@ -321,34 +266,15 @@
                         $('#modalVerCodigoIndicador').text(data.indicador.codigoIndicador);
                         $('#modalVerUnidadMedidaIndicador').text(data.indicador.unidadMedidaIndicador);
                         $('#modalVerValorIndicador').text(data.indicador.valorIndicador);
-                        $('#modalVerFechaIndicador').text(data.indicador.origenIndicador);
-                        $('#modalVerOrigenIndicador').text(data.indicador.fechaIndicador);                        
+                        $('#modalVerFechaIndicador').text(data.indicador.fechaIndicador);
+                        $('#modalVerOrigenIndicador').text(data.indicador.origenIndicador);                        
                    },
                     error: function (xhr, ajaxOptions, thrownError) {
                         alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')
                     }
                 });
             }
-            function editarIndicador()
-            {
-                console.log('openEdit');
-                $('#modalEditarIndicador').modal('show');
-            }
             
-            function closeModalVerIndicador()
-            {
-                console.log('close');
-                $('#modalVerIndicador').modal('hide');
-                $('#modalVerIndicador').modal('dispose');
-            }
-             
-             function closeModalEditarIndicador()
-            {
-                console.log('close');
-                $('#modalEditarIndicador').modal('hide');
-                $('#modalEditarIndicador').modal('dispose');
-                
-            }
 
             function guardarIndicador(){                
                 
@@ -366,7 +292,7 @@
                             nombre: $nombre , codigo: $codigo , unidadMedida: $unidadMedida , valor: $valor , fecha: $fecha , origen: $origen  },
                    success:function(data) {
                         alert('Indicador agregado con exito');
-                        //location.reload();
+                            location.reload();
                    },
                     error: function (data ,xhr, ajaxOptions, thrownError) {
                         var parsedJson = $.parseJSON(data.responseJSON.errores);
@@ -376,10 +302,62 @@
                             $('#modalAgregarErores').append('<p>'+item+'</p>')
                             console.log(item , i);
                         });
-                        //console.log(parsedJson);
                     }
                 });
             }
+            function openEditarIndicador($id){                
+                $.ajax({
+                   type:'post',
+                   url:'/openEditarAjax',
+                   data: {  "_token": "{{ csrf_token() }}",
+                            id: $id },
+                   success:function(data) {
+                    console.log(data.indicador.id);
+                        $('#modalEditarId').val(data.indicador.id);
+                        $('#modalEditarNombreIndicador').val(data.indicador.nombreIndicador);
+                        $('#modalEditarCodigoIndicador').val(data.indicador.codigoIndicador);
+                        $('#modalEditarUnidadMedidaIndicador').val(data.indicador.unidadMedidaIndicador);
+                        $('#modalEditarValorIndicador').val(data.indicador.valorIndicador);
+                        $('#modalEditarFechaIndicador').val(data.indicador.fechaIndicador);
+                        $('#modalEditarOrigenIndicador').val(data.indicador.origenIndicador);                        
+                   },
+                    error: function (xhr, ajaxOptions, thrownError) {s                        
+                        alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')
+                    }
+                });
+            }
+            function modificarIndicador(){       
+
+                        let $id = $('#modalEditarId').val();
+                        let $nombre = $('#modalEditarNombreIndicador').val();
+                        let $codigo = $('#modalEditarCodigoIndicador').val();
+                        let $unidadMedida = $('#modalEditarUnidadMedidaIndicador').val();
+                        let $valor = $('#modalEditarValorIndicador').val();
+                        let $fecha = $('#modalEditarFechaIndicador').val();
+                        let $origen = $('#modalEditarOrigenIndicador').val();                                        
+                $.ajax({
+                   type:'post',
+                   url:'/editarAjax',
+                   data: {  "_token": "{{ csrf_token() }}",
+                            id: $id , nombre : $nombre , codigo : $codigo , unidadMedida : $unidadMedida , valor : $valor,fecha : $fecha , origen : $origen },
+                   success:function(data) {
+                        console.log(data);
+                        alert('el indicador fue modificado con exito.');      
+                        location.reload();                  
+                   },
+                    error: function (data,xhr, ajaxOptions, thrownError) {
+                        console.log('error');
+                        var parsedJson = $.parseJSON(data.responseJSON.errores);
+                        $('#modalEditarErores').html('');
+                        $.each(parsedJson, function(i, item) {                            
+                            $('#modalEditarErores').removeAttr('hidden')
+                            $('#modalEditarErores').append('<p>'+item+'</p>')
+                            console.log(item , i);
+                        });
+                    }
+                });
+            }
+            
             
         </script>
         
@@ -430,7 +408,7 @@
     </div>
   </div>
 </div>
-<!-- Modal -->
+<!-- Modal Editar -->
 <div class="modal fade" id="modalEditarIndicador" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -439,11 +417,39 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        <input id='modalEditarId' hidden="true" type='text'></input>
+         <div id='modalEditarErores'class="alert alert-warning" role="alert" hidden="true">
+         </div>
+        <table class="table table-striped">
+                <tr>
+                    <td>Nombre </td>
+                    <td><input id='modalEditarNombreIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Codigo </td>
+                    <td><input id='modalEditarCodigoIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Unidad medida</td>
+                    <td><input id='modalEditarUnidadMedidaIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Valor</td>
+                    <td><input id='modalEditarValorIndicador' type='number'></input></td>
+                </tr>
+                <tr>
+                    <td>Fecha</td>
+                    <td><input id='modalEditarFechaIndicador'type='date'></input></td>
+                </tr>
+                <tr>
+                    <td>Origen</td>
+                    <td><input id='modalEditarOrigenIndicador' type='text'></input></td>
+                </tr>
+            </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Guardar cambios</button>
+        <button type="button" class="btn btn-primary" onclick='modificarIndicador()'>Guardar cambios</button>
       </div>
     </div>
   </div>
