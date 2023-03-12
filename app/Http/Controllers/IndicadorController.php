@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Indicador;
+use Illuminate\Support\Facades\Validator;
 
 class IndicadorController extends Controller
 {
      public function index()
     {
-        $indicadores = Indicador::orderBy('id')->paginate(20);       	
+        $indicadores = Indicador::orderBy('id','desc')->paginate(20);       	
         return view('index', compact('indicadores'));
     }
 
@@ -45,5 +46,47 @@ class IndicadorController extends Controller
     {	
         $indicador->delete();
         return true;
+    }
+
+    public function guardarAjax(Request $request)
+    {
+    	
+        $validator = Validator::make($request->all(), [
+            'nombre'=>'required',
+            'codigo'=>'required',
+            'unidadMedida'=>'required',            
+            'origen'=>'required',
+            'valor'=>'required|max:10|regex:/^-?[0-9]+(?:\.[0-9]{1,2})?$/',
+            'fecha'=>'required|date'
+        ],[
+    		'required' => 'Cuidado!! el campo :attribute no se puede dejar vacio',
+    		'valor.max' => 'Cuidado!! el campo valor no puede superar los 10 caracteres',
+    		'valor.regex' => 'Cuidado el campo valor solo admite numeros' 
+		]);
+
+        if ($validator->fails()) {
+        	$errors = json_encode($validator->errors());
+        	return response()->json(array('msg'=> false,'errores'=> $errors ), 400);            
+        }else
+        {
+        	 $count = Indicador::count();        	
+        	 $indicador = new Indicador([
+            'nombreIndicador' => $request->get('nombre'),
+            'codigoIndicador' => $request->get('codigo'),
+            'unidadMedidaIndicador' => $request->get('unidadMedida'),
+            'valorIndicador' => $request->get('valor'),
+            'fechaIndicador' => $request->get('fecha'),
+            'origenIndicador' => $request->get('origen'),
+            'id' => $count +1,
+        	]);
+        	if($indicador->save()){
+        		return response()->json(array('msg'=> true), 200); 
+        	}else
+        	{
+        		return response()->json(array('msg'=> false), 400); 
+        	}
+        	
+        }
+
     }
 }

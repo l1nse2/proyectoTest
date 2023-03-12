@@ -20,3 +20,5 @@ Route::post('deleteAjax',[IndicadorController::class, 'deleteAjax']);
 
 Route::post('verAjax',[IndicadorController::class, 'verAjax']);
 
+Route::post('guardarAjax',[IndicadorController::class, 'guardarAjax']);
+

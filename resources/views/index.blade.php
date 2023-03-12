@@ -295,14 +295,13 @@
                    data: {  "_token": "{{ csrf_token() }}",
                             id: $id },
                    success:function(data) {
-                      if(data.msg)                        
-                        {
-                            alert('el indicador fue borrado con exito.');                 
-                            location.reload();
-                        }
-                      else
-                        {alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')}
-                   }
+                      alert('el indicador fue borrado con exito.');                 
+                      location.reload();
+                    
+                   },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')
+                    }
                 });
               } else {
                 text = "You canceled!";
@@ -318,21 +317,16 @@
                    data: {  "_token": "{{ csrf_token() }}",
                             id: $id },
                    success:function(data) {
-                      if(data.msg)                        
-                        {
-                            $('#modalVerNombreIndicador').text(data.indicador.nombreIndicador);
-                            $('#modalVerCodigoIndicador').text(data.indicador.codigoIndicador);
-                            $('#modalVerUnidadIndicador').text(data.indicador.unidadMedidaIndicador);
-                            $('#modalVerValorIndicador').text(data.indicador.valorIndicador);
-                            $('#modalVerFechaIndicador').text(data.indicador.origenIndicador);
-                            $('#modalVerOrigenIndicador').text(data.indicador.fechaIndicador);
-                            
-                            console.log(data.indicador.nombreIndicador)
-                            console.log(data.msg);
-                        }
-                      else
-                        {alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')}
-                   }
+                        $('#modalVerNombreIndicador').text(data.indicador.nombreIndicador);
+                        $('#modalVerCodigoIndicador').text(data.indicador.codigoIndicador);
+                        $('#modalVerUnidadIndicador').text(data.indicador.unidadMedidaIndicador);
+                        $('#modalVerValorIndicador').text(data.indicador.valorIndicador);
+                        $('#modalVerFechaIndicador').text(data.indicador.origenIndicador);
+                        $('#modalVerOrigenIndicador').text(data.indicador.fechaIndicador);                        
+                   },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')
+                    }
                 });
             }
             function editarIndicador()
@@ -354,6 +348,39 @@
                 $('#modalEditarIndicador').modal('hide');
                 $('#modalEditarIndicador').modal('dispose');
                 
+            }
+
+            function guardarIndicador(){                
+                
+                let $nombre = $('#modalAgregarNombreIndicador').val();
+                let $codigo = $('#modalAgregarCodigoIndicador').val();
+                let $unidadMedida = $('#modalAgregarUnidadMedidaIndicador').val();
+                let $valor = $('#modalAgregarValorIndicador').val();
+                let $fecha = $('#modalAgregarFechaIndicador').val();
+                let $origen = $('#modalAgregarOrigenIndicador').val();
+
+                $.ajax({
+                   type:'post',
+                   url:'/guardarAjax',
+                   data: {  "_token": "{{ csrf_token() }}",
+                            nombre: $nombre , codigo: $codigo , unidadMedida: $unidadMedida , valor: $valor , fecha: $fecha , origen: $origen  },
+                   success:function(data) {
+                        alert('Indicador agregado con exito');
+                        location.reload();
+
+
+                   },
+                    error: function (data ,xhr, ajaxOptions, thrownError) {
+                        var parsedJson = $.parseJSON(data.responseJSON.errores);
+                        $('#modalAgregarErores').html('');
+                        $.each(parsedJson, function(i, item) {                            
+                            $('#modalAgregarErores').removeAttr('hidden')
+                            $('#modalAgregarErores').append('<p>'+item+'</p>')
+                            console.log(item , i);
+                        });
+                        //console.log(parsedJson);
+                    }
+                });
             }
             
         </script>
@@ -408,11 +435,38 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+            <div id='modalAgregarErores'class="alert alert-warning" role="alert" hidden="true">
+            </div>
+            <table class="table table-striped">
+                <tr>
+                    <td>Nombre </td>
+                    <td><input id='modalAgregarNombreIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Codigo </td>
+                    <td><input id='modalAgregarCodigoIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Unidad medida</td>
+                    <td><input id='modalAgregarUnidadMedidaIndicador' type='text'></input></td>
+                </tr>
+                <tr>
+                    <td>Valor</td>
+                    <td><input id='modalAgregarValorIndicador' type='number'></input></td>
+                </tr>
+                <tr>
+                    <td>Fecha</td>
+                    <td><input id='modalAgregarFechaIndicador'type='date'></input></td>
+                </tr>
+                <tr>
+                    <td>Origen</td>
+                    <td><input id='modalAgregarOrigenIndicador' type='text'></input></td>
+                </tr>
+            </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Guardar cambios</button>
+        <button type="button" class="btn btn-primary" onclick="guardarIndicador()">Guardar</button>
       </div>
     </div>
   </div>
