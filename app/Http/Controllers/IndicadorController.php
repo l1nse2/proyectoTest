@@ -61,7 +61,7 @@ class IndicadorController extends Controller
         ],[
     		'required' => 'Cuidado!! el campo :attribute no se puede dejar vacio',
     		'valor.max' => 'Cuidado!! el campo valor no puede superar los 10 caracteres',
-    		'valor.regex' => 'Cuidado el campo valor solo admite numeros' 
+    		'valor.regex' => 'Cuidado!! el campo valor solo admite numeros' 
 		]);
 
         if ($validator->fails()) {

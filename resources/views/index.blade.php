@@ -319,7 +319,7 @@
                    success:function(data) {
                         $('#modalVerNombreIndicador').text(data.indicador.nombreIndicador);
                         $('#modalVerCodigoIndicador').text(data.indicador.codigoIndicador);
-                        $('#modalVerUnidadIndicador').text(data.indicador.unidadMedidaIndicador);
+                        $('#modalVerUnidadMedidaIndicador').text(data.indicador.unidadMedidaIndicador);
                         $('#modalVerValorIndicador').text(data.indicador.valorIndicador);
                         $('#modalVerFechaIndicador').text(data.indicador.origenIndicador);
                         $('#modalVerOrigenIndicador').text(data.indicador.fechaIndicador);                        
@@ -366,9 +366,7 @@
                             nombre: $nombre , codigo: $codigo , unidadMedida: $unidadMedida , valor: $valor , fecha: $fecha , origen: $origen  },
                    success:function(data) {
                         alert('Indicador agregado con exito');
-                        location.reload();
-
-
+                        //location.reload();
                    },
                     error: function (data ,xhr, ajaxOptions, thrownError) {
                         var parsedJson = $.parseJSON(data.responseJSON.errores);
@@ -399,11 +397,35 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+            <table class="table table-striped">
+                <tr>
+                    <td>Nombre </td>
+                    <td><label id='modalVerNombreIndicador' ></label></td>
+                </tr>
+                <tr>
+                    <td>Codigo </td>
+                    <td><label id='modalVerCodigoIndicador' ></label></td>
+                </tr>
+                <tr>
+                    <td>Unidad medida</td>
+                    <td><label id='modalVerUnidadMedidaIndicador' ></label></td>
+                </tr>
+                <tr>
+                    <td>Valor</td>
+                    <td><label id='modalVerValorIndicador' ></label></td>
+                </tr>
+                <tr>
+                    <td>Fecha</td>
+                    <td><label id='modalVerFechaIndicador'></label></td>
+                </tr>
+                <tr>
+                    <td>Origen</td>
+                    <td><label id='modalVerOrigenIndicador' ></label></td>
+                </tr>
+            </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary">Guardar cambios</button>
       </div>
     </div>
   </div>
