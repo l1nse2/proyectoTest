@@ -35,7 +35,7 @@ class IndicadorController extends Controller
     	$indicador = Indicador::find($id); 	 
     	if ($indicador)
     	{
-    		return response()->json(array('msg'=> true,'indicadores'=> $indicador ), 200);
+    		return response()->json(array('msg'=> true,'indicador'=> $indicador ), 200);
     	}
     	else
     	{return response()->json(array('msg'=> false), 500);}
