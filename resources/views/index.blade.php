@@ -328,34 +328,41 @@
             }
             function modificarIndicador(){       
 
-                        let $id = $('#modalEditarId').val();
-                        let $nombre = $('#modalEditarNombreIndicador').val();
-                        let $codigo = $('#modalEditarCodigoIndicador').val();
-                        let $unidadMedida = $('#modalEditarUnidadMedidaIndicador').val();
-                        let $valor = $('#modalEditarValorIndicador').val();
-                        let $fecha = $('#modalEditarFechaIndicador').val();
-                        let $origen = $('#modalEditarOrigenIndicador').val();                                        
-                $.ajax({
-                   type:'post',
-                   url:'/editarAjax',
-                   data: {  "_token": "{{ csrf_token() }}",
-                            id: $id , nombre : $nombre , codigo : $codigo , unidadMedida : $unidadMedida , valor : $valor,fecha : $fecha , origen : $origen },
-                   success:function(data) {
-                        console.log(data);
-                        alert('el indicador fue modificado con exito.');      
-                        location.reload();                  
-                   },
-                    error: function (data,xhr, ajaxOptions, thrownError) {
-                        console.log('error');
-                        var parsedJson = $.parseJSON(data.responseJSON.errores);
-                        $('#modalEditarErores').html('');
-                        $.each(parsedJson, function(i, item) {                            
-                            $('#modalEditarErores').removeAttr('hidden')
-                            $('#modalEditarErores').append('<p>'+item+'</p>')
-                            console.log(item , i);
-                        });
-                    }
-                });
+                let text = "Estas seguro que deseas modificar el indicador";
+                if (confirm(text) == true) {
+                    let $id = $('#modalEditarId').val();
+                    let $nombre = $('#modalEditarNombreIndicador').val();
+                    let $codigo = $('#modalEditarCodigoIndicador').val();
+                    let $unidadMedida = $('#modalEditarUnidadMedidaIndicador').val();
+                    let $valor = $('#modalEditarValorIndicador').val();
+                    let $fecha = $('#modalEditarFechaIndicador').val();
+                    let $origen = $('#modalEditarOrigenIndicador').val();
+
+                    $.ajax({
+                       type:'post',
+                       url:'/editarAjax',
+                       data: {  "_token": "{{ csrf_token() }}",
+                                id: $id , nombre : $nombre , codigo : $codigo , unidadMedida : $unidadMedida , valor : $valor,fecha : $fecha , origen : $origen },
+                       success:function(data) {
+                            console.log(data);
+                            alert('el indicador fue modificado con exito.');      
+                            location.reload();                  
+                       },
+                        error: function (data,xhr, ajaxOptions, thrownError) {
+                            console.log('error');
+                            var parsedJson = $.parseJSON(data.responseJSON.errores);
+                            $('#modalEditarErores').html('');
+                            $.each(parsedJson, function(i, item) {                            
+                                $('#modalEditarErores').removeAttr('hidden')
+                                $('#modalEditarErores').append('<p>'+item+'</p>')
+                                console.log(item , i);
+                            });
+                        }
+                    });
+                }else {
+                text = "You canceled!";
+              }
+              console.log(text);
             }
             
             
