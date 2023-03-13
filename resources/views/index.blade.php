@@ -384,33 +384,28 @@
             var $label;
             var $data = [];
             var $xy = {};
-            $.each($indicadores, function(i, item) {
-                //cantidad de datos por indicador
-                //console.log($indicadores['BITCOIN'].length);
-                $.each(item, function(i2, item2) {
+            $.each($indicadores, function(i, item) {    
+                 $.each(item, function(i2, item2) {
                     if(i2 == 0)
                     {
-                        $label = item2.codigoIndicador;                        
-                    }                                 
+                        $label = item2.codigoIndicador; 
+                                               
+                    }                       
                     $xy={x:item2.fechaIndicador , y: item2.valorIndicador}                     
-                    $data.push($xy) 
-                    if(i2 == item.length -1 )  
-                    {
-                        console.log('final :', item.length);
-                        console.log('final2 :', $data);
-                        $data = [];
-                        //Crear el dataset
-                        let dataset2=  {   data: $data,
+                    $data.push($xy)                      
+                });
+
+                let dataset2=  { data: $data,
                                 label : $label,
                                 borderColor : "#0cba9f",
-                                fill : false };
-
-                         //Agrega una linea
-                         mychart.data.datasets.push(dataset2);
-                         //actualiza el grafico
-                         mychart.update();
-                    }   
-                });
+                                fill : false };              
+                //Agrega una linea
+                mychart.data.datasets.push(dataset2);
+                //actualiza el grafico
+                mychart.update();
+                $label= '';
+                $data = [];
+                
             });
              
            
