@@ -24,6 +24,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
         
+
+        
     </head>
 	<body class="sb-nav-fixed">
         
@@ -129,30 +131,11 @@
                         <h1 class="mt-4">Indicadores</h1>                        
                     
                         <div class="row">
-                            <div class="col-xl-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Area Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Bar Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
+                            <canvas id="indicadoresGrafico"></canvas>    
                         </div>                          
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarIndicador">Agregar indicador </button>
-                       
-
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarIndicador">Agregar indicador </button>                       
                         <p></p>
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
@@ -223,14 +206,13 @@
      
      <
         <!-- scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="js/datatables-simple-demo.js"></script>
         <script >
+
       
             function deleteIndicator($id) {
               let text = "Estas seguro que deseas borrar el indicador";
@@ -366,6 +348,78 @@
             }
             
             
+        </script>
+
+        <script>  
+            //Fechas para el axial Y del grafico      
+            var $fechasIndicadores = {!! json_encode($fechaIndicadores->toArray()) !!};
+            var $labelsFechas = [ ];
+            $.each($fechasIndicadores, function(i, item) {
+                $labelsFechas.push(item.fechaindicador);
+                //console.log(item.fechaindicador);
+            });
+
+
+            
+            let mychart = new Chart(document.getElementById("indicadoresGrafico"), {            
+                type : 'line',
+                data : {
+                    labels : $labelsFechas,
+                    datasets : []
+                },
+                options : {
+                    title : {
+                        display : true,
+                        text : 'Chart JS Line Chart Example'
+                    },scales: {
+                    },
+                }
+            });
+
+            //Crear datasets
+            var $indicadores = {!! json_encode($indicadoresValorFecha->toArray()) !!};
+
+
+
+            var $label;
+            var $data = [];
+            var $xy = {};
+            $.each($indicadores, function(i, item) {
+                //cantidad de datos por indicador
+                //console.log($indicadores['BITCOIN'].length);
+                $.each(item, function(i2, item2) {
+                    if(i2 == 0)
+                    {
+                        $label = item2.codigoIndicador;                        
+                    }                                 
+                    $xy={x:item2.fechaIndicador , y: item2.valorIndicador}                     
+                    $data.push($xy) 
+                    if(i2 == item.length -1 )  
+                    {
+                        console.log('final :', item.length);
+                        console.log('final2 :', $data);
+                        $data = [];
+                        //Crear el dataset
+                        let dataset2=  {   data: $data,
+                                label : $label,
+                                borderColor : "#0cba9f",
+                                fill : false };
+
+                         //Agrega una linea
+                         mychart.data.datasets.push(dataset2);
+                         //actualiza el grafico
+                         mychart.update();
+                    }   
+                });
+            });
+             
+           
+             
+            //Crea la informacion
+            
+
+           
+
         </script>
         
         

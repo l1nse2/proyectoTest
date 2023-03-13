@@ -6,13 +6,32 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Indicador;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class IndicadorController extends Controller
 {
      public function index()
-    {
-        $indicadores = Indicador::orderBy('id','desc')->paginate(20);       	
-        return view('index', compact('indicadores'));
+    {    	
+        //obtener indicadores
+    	$tipoIndicadores = $result = DB::table('indicadors')
+		->select('nombreindicador')
+		->distinct()
+		->get();
+
+        //obtener fechas para usar en Y
+        $fechaIndicadores = DB::table('indicadors')
+        ->select('fechaindicador')
+        ->distinct()
+        ->orderBy('fechaindicador')
+        ->get();;
+
+        $indicadoresValorFecha = Indicador::all();
+        $indicadoresValorFecha = $indicadoresValorFecha->groupBy('nombreIndicador');
+        
+        
+        //dd($tipoIndicador);    
+        //$indicadores = Indicador::orderBy('id','desc')->paginate(20);       	
+        return view('index', compact( 'tipoIndicadores' , 'fechaIndicadores','indicadoresValorFecha'));
     }
 
       public function deleteAjax(Request $request)
