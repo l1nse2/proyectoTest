@@ -131,8 +131,26 @@
                         <h1 class="mt-4">Indicadores</h1>                        
                     
                         <div class="row">
-                            <canvas id="indicadoresGrafico"></canvas>    
-                        </div>                          
+                            <div class="col-12">
+                                <canvas id="indicadoresGrafico"></canvas>
+                            </div>                            
+                            <div class="col-12">
+                                <br>
+                                <div id='agregarEroresFiltro'class="alert alert-warning" role="alert" hidden="true">
+                                </div>
+                                <br>
+                                <label>Filtrar grafico</label>
+                                <br>
+                                <label>Desde :</label>
+                                <input id='FechaInicio'type='date'></input>
+                                <label> - Hasta : </label>
+                                <input id='FechaTermino'type='date'></input>
+                                <button id='btnFiltrarGrafico' onclick='filtrarGrafico()' >Filtrar</button>
+                            </div>    
+                        </div>              
+                        
+                        <br>  
+                        <br>            
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarIndicador">Agregar indicador </button>                       
                         <p></p>
 
@@ -351,29 +369,22 @@
         </script>
 
         <script>  
+            //Cuando carga la pagina
             //Fechas para el axial Y del grafico      
             var $fechasIndicadores = {!! json_encode($fechaIndicadores->toArray()) !!};
             var $labelsFechas = [ ];
             $.each($fechasIndicadores, function(i, item) {
                 $labelsFechas.push(item.fechaindicador);
-                //console.log(item.fechaindicador);
             });
 
 
-            
-            let mychart = new Chart(document.getElementById("indicadoresGrafico"), {            
+            //crea el grafico
+            var mychart = new Chart(document.getElementById("indicadoresGrafico"), {            
                 type : 'line',
                 data : {
                     labels : $labelsFechas,
                     datasets : []
                 },
-                options : {
-                    title : {
-                        display : true,
-                        text : 'Chart JS Line Chart Example'
-                    },scales: {
-                    },
-                }
             });
 
             //Crear datasets
@@ -384,23 +395,36 @@
             var $label;
             var $data = [];
             var $xy = {};
+            var $colorNumber = 0;
+            //arreglo de colores para los label
+            var $colors = ['#E63009' , '#E5720C' ,'#225392' , '#229273' , '#212635' , '#ADBA12' , '#744A24' ,'#AB0938' , '#741F6F' , '#2EB66A' , '#C19F14' , '#386159' , '#386159' , '#2A623B' , '#A98F0B' , '#9E9772' , '#53470A' ,'#364431' , '#7089BF']
             $.each($indicadores, function(i, item) {    
                  $.each(item, function(i2, item2) {
                     if(i2 == 0)
                     {
+                        //Obtener codigo indicador
                         $label = item2.codigoIndicador; 
                                                
                     }                       
+                    // posiciones x(valor) , y(fecha) por codigo 
                     $xy={x:item2.fechaIndicador , y: item2.valorIndicador}                     
                     $data.push($xy)                      
                 });
 
-                let dataset2=  { data: $data,
+                //armando el nuevo dataset
+                let $dataset2=  { data: $data,
                                 label : $label,
-                                borderColor : "#0cba9f",
-                                fill : false };              
-                //Agrega una linea
-                mychart.data.datasets.push(dataset2);
+                                borderColor : $colors[$colorNumber],
+                                fill : false };
+                //variando el color                        
+                $colorNumber = $colorNumber + 1 ;
+                //si los colores se agotan parte desde 0 
+                if($colorNumber == 18)
+                {
+                    $colorNumber = 0;   
+                }      
+                //Agrega un dataset
+                mychart.data.datasets.push($dataset2);
                 //actualiza el grafico
                 mychart.update();
                 $label= '';
@@ -408,13 +432,65 @@
                 
             });
              
-           
-             
-            //Crea la informacion
+            //actualiza el grafico
+            mychart.update();  
             
+            function filtrarGrafico(){
+                var $fechaInicio= $('#FechaInicio').val();
+                var $fechaTermino= $('#FechaTermino').val();
+                if($fechaInicio == '' || $fechaTermino == '')
+                {
+                    $('#agregarEroresFiltro').html('');
+                    $('#agregarEroresFiltro').removeAttr('hidden');
+                    $('#agregarEroresFiltro').append('<p>'+'Debe seleccionar fecha de inicio y de termino para filtrar'+'</p>')
+                }else
+                {
+                    $('#agregarEroresFiltro').html('');
+                    $fechaInicio2 = new Date($fechaInicio);
+                    $fechaTermino2 = new Date($fechaTermino);                    
+                    if($fechaInicio2 >= $fechaTermino2)
+                    {                        
+                        console.log('entro');
+                        $('#agregarEroresFiltro').removeAttr('hidden');
+                        $('#agregarEroresFiltro').append('<p>'+'Fecha de inicio debe ser menos a la fecha de termino'+'</p>')
+                    }else
+                    {
+                        $('#agregarEroresFiltro').html('');
+                        $('#agregarEroresFiltro').attr('hidden' , true);
 
-           
-
+                        $.ajax({
+                               type:'post',
+                               url:'/filtrarGraficoAjax',
+                               data: {  "_token": "{{ csrf_token() }}",
+                                        fechaInicio: $fechaInicio,
+                                        fechaTermino: $fechaTermino },
+                               success:function(data) {
+                                    let $fechaIndicadores2 = data.fechaIndicadores;
+                                     //Fechas para el axial Y del grafico      
+                                    var $labelsFechas = [ ];
+                                                                      
+                                    $.each($fechaIndicadores2, function(i, item) {
+                                        $labelsFechas.push(item.fechaindicador)                                        
+                                    });
+                                    mychart.destroy(); 
+                                    mychart = new Chart(document.getElementById("indicadoresGrafico"), {            
+                                        type : 'line',
+                                        data : {
+                                            labels : '$labelsFechas',
+                                            datasets : [{x:1234, y:1234}]
+                                        },
+                                    });
+                                    mychart.update();
+                                    console.log($labelsFechas);
+                               },
+                                error: function (xhr, ajaxOptions, thrownError) {s                        
+                                    alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')
+                                }                          
+                        });
+                    
+                    }                
+                }
+            }                
         </script>
         
         

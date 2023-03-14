@@ -25,3 +25,7 @@ Route::post('guardarAjax',[IndicadorController::class, 'guardarAjax']);
 Route::post('openEditarAjax',[IndicadorController::class, 'openEditarAjax']);
 
 Route::post('editarAjax',[IndicadorController::class, 'editarAjax']);
+
+Route::post('filtrarGraficoAjax',[IndicadorController::class, 'filtrarGraficoAjax']);
+
+

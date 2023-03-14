@@ -30,8 +30,8 @@ class IndicadorController extends Controller
         
         
         //dd($tipoIndicador);    
-        //$indicadores = Indicador::orderBy('id','desc')->paginate(20);       	
-        return view('index', compact( 'tipoIndicadores' , 'fechaIndicadores','indicadoresValorFecha'));
+        $indicadores = Indicador::orderBy('id','desc')->paginate(20);       	
+        return view('index', compact( 'indicadores','tipoIndicadores' , 'fechaIndicadores','indicadoresValorFecha'));
     }
 
       public function deleteAjax(Request $request)
@@ -157,5 +157,19 @@ class IndicadorController extends Controller
         		return response()->json(array('msg'=> false), 400); 
         	}        	
         }
+    }
+
+    public function filtrarGraficoAjax(Request $request){
+        
+         $fechaIndicadores = DB::table('indicadors')
+         ->where('fechaIndicador','>=', $request->fechaInicio)
+        ->select('fechaindicador')
+        ->distinct()
+        ->orderBy('fechaindicador')
+        ->get();
+
+        return response()->json(array('msg'=> true,'fechaIndicadores'=> $fechaIndicadores ), 200);
+
+        
     }
 }
