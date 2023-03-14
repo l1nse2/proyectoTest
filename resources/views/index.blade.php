@@ -145,7 +145,7 @@
                                 <input id='FechaInicio'type='date'></input>
                                 <label> - Hasta : </label>
                                 <input id='FechaTermino'type='date'></input>
-                                <button id='btnFiltrarGrafico' onclick='filtrarGrafico()' >Filtrar</button>
+                                <button class="btn btn-warning" id='btnFiltrarGrafico' onclick='filtrarGrafico()' >Filtrar</button>
                             </div>    
                         </div>              
                         
