@@ -386,18 +386,17 @@
                     datasets : []
                 },
             });
+            //arreglo de colores para los label
+            var $colors = ['#E63009' , '#E5720C' ,'#225392' , '#229273' , '#212635' , '#ADBA12' , '#744A24' ,'#AB0938' , '#741F6F' , '#2EB66A' , '#C19F14' , '#386159' , '#386159' , '#2A623B' , '#A98F0B' , '#9E9772' , '#53470A' ,'#364431' , '#7089BF'];
 
             //Crear datasets
-            var $indicadores = {!! json_encode($indicadoresValorFecha->toArray()) !!};
+            let $indicadores = {!! json_encode($indicadoresValorFecha->toArray()) !!};
 
-
-
-            var $label;
-            var $data = [];
-            var $xy = {};
-            var $colorNumber = 0;
-            //arreglo de colores para los label
-            var $colors = ['#E63009' , '#E5720C' ,'#225392' , '#229273' , '#212635' , '#ADBA12' , '#744A24' ,'#AB0938' , '#741F6F' , '#2EB66A' , '#C19F14' , '#386159' , '#386159' , '#2A623B' , '#A98F0B' , '#9E9772' , '#53470A' ,'#364431' , '#7089BF']
+            let $label;
+            let $data = [];
+            let $xy = {};
+            let $colorNumber = 0;
+            
             $.each($indicadores, function(i, item) {    
                  $.each(item, function(i2, item2) {
                     if(i2 == 0)
@@ -465,23 +464,69 @@
                                         fechaInicio: $fechaInicio,
                                         fechaTermino: $fechaTermino },
                                success:function(data) {
+                                    //Fechas para el axial Y del grafico
                                     let $fechaIndicadores2 = data.fechaIndicadores;
-                                     //Fechas para el axial Y del grafico      
-                                    var $labelsFechas = [ ];
-                                                                      
+                                    let $labelsFechas = [];                                  
+                                     console.log('fechas' ,$fechaIndicadores2 )
+
+                                    //nuevas fechas filtradas                           
                                     $.each($fechaIndicadores2, function(i, item) {
-                                        $labelsFechas.push(item.fechaindicador)                                        
+                                        $labelsFechas.push(item.fechaindicador)                                     
                                     });
+
+                                    //destruye el antiguo grafico
                                     mychart.destroy(); 
+                                    //crea un nuevo grafico
                                     mychart = new Chart(document.getElementById("indicadoresGrafico"), {            
                                         type : 'line',
                                         data : {
-                                            labels : '$labelsFechas',
-                                            datasets : [{x:1234, y:1234}]
+                                            labels : $labelsFechas,
+                                            datasets : []
                                         },
                                     });
+                                    //constuye la data del nuevo grafico
+                                    let $indicadores2 = data.indicadores;
+                                    let $label;
+                                    let $data = [];
+                                    let $xy = {};
+                                    let $colorNumber = 0;
+
+                                    //recorre la nueva informacion
+                                    $.each($indicadores2, function(i, item) {    
+                                     $.each(item, function(i2, item2) {
+                                        if(i2 == 0)
+                                        {
+                                            //Obtener codigo indicador
+                                            $label = item2.codigoIndicador; 
+                                                                   
+                                        }                       
+                                        // posiciones x(valor) , y(fecha) por codigo 
+                                        $xy={x:item2.fechaIndicador , y: item2.valorIndicador}                     
+                                        $data.push($xy)                      
+                                    });
+
+                                    //armando el nuevo dataset
+                                    let $dataset2=  { data: $data,
+                                                    label : $label,
+                                                    borderColor : $colors[$colorNumber],
+                                                    fill : false };
+                                    //variando el color                        
+                                    $colorNumber = $colorNumber + 1 ;
+                                    //si los colores se agotan parte desde 0 
+                                    if($colorNumber == 18)
+                                    {
+                                        $colorNumber = 0;   
+                                    }      
+                                    //Agrega un dataset
+                                    mychart.data.datasets.push($dataset2);
+                                    //actualiza el grafico
                                     mychart.update();
-                                    console.log($labelsFechas);
+                                    $label= '';
+                                    $data = [];
+                                    
+                                });
+
+                                    mychart.update();
                                },
                                 error: function (xhr, ajaxOptions, thrownError) {s                        
                                     alert('a ocurrido un error intentelo nuevamente mas tarde o pongase en contacto con el administrador.')

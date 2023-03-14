@@ -163,12 +163,19 @@ class IndicadorController extends Controller
         
          $fechaIndicadores = DB::table('indicadors')
          ->where('fechaIndicador','>=', $request->fechaInicio)
+         ->where('fechaIndicador','<=', $request->fechaTermino)
         ->select('fechaindicador')
         ->distinct()
         ->orderBy('fechaindicador')
-        ->get();
+        ->get();        
 
-        return response()->json(array('msg'=> true,'fechaIndicadores'=> $fechaIndicadores ), 200);
+        $indicadoresValorFecha = Indicador::where('fechaIndicador','>=', $request->fechaInicio)
+        ->where('fechaIndicador','<=', $request->fechaTermino)
+        ->get();
+        $indicadoresValorFecha = $indicadoresValorFecha->groupBy('nombreIndicador');
+
+
+        return response()->json(array('msg'=> true,'fechaIndicadores'=> $fechaIndicadores, 'indicadores' => $indicadoresValorFecha ), 200);
 
         
     }
