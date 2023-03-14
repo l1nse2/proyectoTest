@@ -451,7 +451,7 @@
                     {                        
                         console.log('entro');
                         $('#agregarEroresFiltro').removeAttr('hidden');
-                        $('#agregarEroresFiltro').append('<p>'+'Fecha de inicio debe ser menos a la fecha de termino'+'</p>')
+                        $('#agregarEroresFiltro').append('<p>'+'Fecha de inicio debe ser menor a la fecha de termino'+'</p>')
                     }else
                     {
                         $('#agregarEroresFiltro').html('');
